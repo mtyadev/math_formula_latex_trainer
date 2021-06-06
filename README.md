@@ -21,6 +21,6 @@ $ source venv/bin/activate
 
 $ venv\Scripts\activate
 
-## Inside venv Install required libraries
+## Inside venv install required libraries
 
 $ pip install flask python-dotenv flask-wtf
