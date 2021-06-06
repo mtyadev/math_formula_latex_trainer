@@ -1,6 +1,6 @@
 # math_formula_latex_trainer
 
-* Mini App to generate Quizzes and memorize math formulas using LaTeX.
+* Mini Python Flask App to generate math quizzes and memorize math formulas using LaTeX.
 * Current Status is WIP, not functional
 
 # Setup
