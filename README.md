@@ -24,3 +24,9 @@ $ venv\Scripts\activate
 ## Inside venv install required libraries
 
 $ pip install flask python-dotenv flask-wtf
+
+## Start app in dev mode
+
+From inside venv type
+
+$ flask run
