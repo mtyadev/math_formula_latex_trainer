@@ -2,6 +2,7 @@
 
 * Mini Python Flask App to generate math quizzes and memorize math formulas using LaTeX.
 * Current Status is WIP, not functional
+* For setup of basic flask framework using best practices as outlined in https://blog.miguelgrinberg.com/
 
 # Setup
 
@@ -23,7 +24,7 @@ $ venv\Scripts\activate
 
 ## Inside venv install required libraries
 
-$ pip install flask python-dotenv flask-wtf
+$ pip install flask python-dotenv flask-wtf flask-sqlalchemy flask-migrate flask-login email-validator
 
 ## Start app in dev mode
 
