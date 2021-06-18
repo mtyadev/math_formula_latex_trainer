@@ -6,6 +6,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Dev Database
+app.db
+
 # Distribution / packaging
 eggs/
 .eggs/
