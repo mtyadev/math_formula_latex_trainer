@@ -1,3 +1,4 @@
+import random
 from flask import render_template, flash, redirect, url_for
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, MathQuizForm
@@ -5,6 +6,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Lesson, Exercise
 from werkzeug.urls import url_parse
 from flask import request
+
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -51,10 +53,10 @@ def index():
 @app.route("/quiz", methods=["GET", "POST"])
 @login_required
 def quiz():
-    exercise = Exercise.query.first()
+    exercises = Exercise.query.all()
+    exercise = random.choice(exercises)
     form = MathQuizForm(exercise_id=exercise.id)
     if form.validate_on_submit():
-        print("Correct LALALA")
         flash('Correct!')
         return redirect(url_for('quiz'))
     return render_template("quiz.html", title="Quiz", form=form, question=exercise.question)
