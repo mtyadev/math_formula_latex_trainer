@@ -24,7 +24,7 @@ $ venv\Scripts\activate
 
 ## Inside venv install required libraries
 
-$ pip install flask python-dotenv flask-wtf flask-sqlalchemy flask-migrate flask-login email-validator
+$ pip install flask python-dotenv flask-wtf flask-sqlalchemy flask-migrate flask-login email-validator flask-bootstrap
 
 ## Start app in dev mode
 
