@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
-from app.models import User
+from app.models import User, Exercise
 
 class LoginForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired()])
@@ -25,3 +25,22 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError("Please enter different email address.")
+
+class MathQuizForm(FlaskForm):
+    exercise_id = HiddenField("exercise_id")
+    entered_solution = StringField("solution", validators = [DataRequired()])
+    submit = SubmitField("Submit")
+
+    def validate(self):
+        if not FlaskForm.validate(self):
+            return False
+        result = True
+        correct_solution = Exercise.query.filter_by(id=self.exercise_id.data).first()
+        print(correct_solution.answer)
+        print(self.entered_solution.data)
+        if self.entered_solution.data != correct_solution.answer:
+            self.entered_solution.errors.append('Wrong answer!')
+            result = False
+        return result
+
+

@@ -21,3 +21,27 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
+
+class Lesson(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String, nullable=False)
+
+    def __init__(self, title):
+        self.title = title
+
+    def __repr__(self):
+        return 'Lesson %r' % self.title
+
+class Exercise(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    question = db.Column(db.String, nullable=False)
+    answer = db.Column(db.String, nullable=False)
+    lesson = db.Column(db.Integer, db.ForeignKey("lesson.id"))
+
+    def __init__(self, question, answer, lesson):
+        self.question = question
+        self.answer = answer
+        self.lesson = lesson
+
+    def __repr__(self):
+        return 'Exercise %r' % self.question

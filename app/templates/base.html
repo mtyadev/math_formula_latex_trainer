@@ -2,6 +2,12 @@
 {% block title %}
     {% if title %}{{ title }} - Math Formula Latex Trainer{% else %}No title{% endif %}
 {% endblock %}
+{% block scripts %}
+  {{super()}}
+    <script type="text/javascript" async
+      src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+{% endblock %}
 
 {% block navbar %}
     <nav class="navbar navbar-default">
