@@ -7,6 +7,10 @@ from app.models import User, Lesson, Exercise
 from werkzeug.urls import url_parse
 from flask import request
 
+def choose_random_exercise_id(lesson_id):
+    exercise_ids_in_lesson = [exercise.id for exercise in Exercise.query.filter_by(lesson=lesson_id).all()]
+    exercise_id = random.choice(exercise_ids_in_lesson)
+    return exercise_id
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -48,15 +52,21 @@ def register():
 @app.route("/index")
 @login_required
 def index():
-    return render_template("index.html", title="Home")
+    lesson_with_exercise_ids = []
+    for lesson in Lesson.query.all():
+        lesson_with_exercise_ids.append((lesson.title, lesson.id, choose_random_exercise_id(lesson.id)))
+    return render_template("index.html", title="Home", lesson_with_exercise_ids=lesson_with_exercise_ids)
 
 @app.route("/quiz", methods=["GET", "POST"])
 @login_required
 def quiz():
-    exercises = Exercise.query.all()
-    exercise = random.choice(exercises)
-    form = MathQuizForm(exercise_id=exercise.id)
+    lesson_id = request.args.get("lesson_id")
+    exercise_id = request.args.get("exercise_id")
+    form = MathQuizForm(exercise_id=exercise_id)
     if form.validate_on_submit():
         flash('Correct!')
-        return redirect(url_for('quiz'))
+        exercise_id = choose_random_exercise_id(lesson_id)
+        return redirect(url_for('quiz', exercise_id=exercise_id, lesson_id='1'))
+
+    exercise = Exercise.query.filter_by(id=exercise_id).first()
     return render_template("quiz.html", title="Quiz", form=form, question=exercise.question)

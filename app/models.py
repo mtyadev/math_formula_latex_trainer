@@ -38,9 +38,10 @@ class Exercise(db.Model):
     answer = db.Column(db.String, nullable=False)
     lesson = db.Column(db.Integer, db.ForeignKey("lesson.id"))
 
-    def __init__(self, question, answer):
+    def __init__(self, question, answer, lesson):
         self.question = question
         self.answer = answer
+        self.lesson = lesson
 
     def __repr__(self):
         return 'Exercise %r' % self.question
