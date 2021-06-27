@@ -7,6 +7,22 @@
     <script type="text/javascript" async
       src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML">
     </script>
+    <script>
+$('#entered_solution').bind('keypress keyup blur', function() {
+    $('#displayed_solution').html($(this).val());
+});
+    </script>
+    <script>
+        $(function() {
+            $("#entered_solution").fadeOut(10000);
+        });
+    </script>
+    <script>
+        $(function() {
+            $("#displayed_solution").html("10000");
+        });
+    </script>
+
 {% endblock %}
 
 {% block navbar %}
