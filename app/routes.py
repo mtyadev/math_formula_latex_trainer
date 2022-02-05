@@ -66,7 +66,7 @@ def quiz():
     if form.validate_on_submit():
         flash('Correct!')
         exercise_id = choose_random_exercise_id(lesson_id)
-        return redirect(url_for('quiz', exercise_id=exercise_id, lesson_id='1'))
+        return redirect(url_for('quiz', exercise_id=exercise_id, lesson_id=lesson_id))
 
     exercise = Exercise.query.filter_by(id=exercise_id).first()
     return render_template("quiz.html", title="Quiz", form=form, question=exercise.question)

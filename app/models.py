@@ -45,3 +45,20 @@ class Exercise(db.Model):
 
     def __repr__(self):
         return 'Exercise %r' % self.question
+
+class UserLessonExerciseProgress(db.Model):
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), primary_key=True)
+    lesson_id = db.Column(db.Integer, db.ForeignKey("lesson.id"), primary_key=True)
+    exercise_id = db.Column(db.Integer, db.ForeignKey("exercise.id"), primary_key=True)
+    times_shown = db.Column(db.Integer, nullable=False)
+    times_false = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, user_id, lesson_id, exercise_id, times_shown, times_false):
+        self.user_id = user_id
+        self.lesson_id = lesson_id
+        self.exercise_id = exercise_id
+        self.times_shown = times_shown
+        self.times_false = times_false
+
+    def __repr__(self):
+        return f"User {self.user_id} Lesson {self.lesson_id} Exercise {self.exercise_id} Progress"
