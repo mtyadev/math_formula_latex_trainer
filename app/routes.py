@@ -8,14 +8,19 @@ from werkzeug.urls import url_parse
 from flask import request
 
 def choose_random_exercise_id(lesson_id):
-    exercise_ids_in_lesson = [exercise.id for exercise in Exercise.query.filter_by(lesson=lesson_id).all()]
-    exercise_id = random.choice(exercise_ids_in_lesson)
-    return exercise_id
+    exercise_ids_in_lesson = [
+        x.exercise_id for x in UserLessonExerciseProgress.query.filter(
+        (lesson_id==lesson_id) & (user_id==current_user.id) & times_shown<=3
+            ).all())
+    ]
+    return random.choice(exercise_ids_in_lesson)
 
-def persist_user_lesson_exercise_progress(user_id, lesson_id):
-    for exercise in Exercise.query.filter_by(lesson=lesson_id).all():
-        db.session.add(UserLessonExerciseProgress(user_id, lesson_id, exercise.id, 0, 0))
-    db.session.commit()
+def persist_user_lesson_exercise_progress(lesson_id):
+    # Only persist, if hasn't been persisted before.
+    if not UserLessonExerciseProgress.query.filter_by(lesson_id=lesson_id, user_id=current_user.id).all():
+        for exercise in Exercise.query.filter_by(lesson=lesson_id).all():
+            db.session.add(UserLessonExerciseProgress(current_user.id, lesson_id, exercise.id, 0, 0))
+        db.session.commit()
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -60,9 +65,9 @@ def index():
     form = LessonSelection()
     form.lesson.choices = [(lesson.id, lesson.title) for lesson in Lesson.query.all()]
     if form.validate_on_submit():
-        import pdb; pdb.set_trace()
-        persist_user_lesson_exercise_progress(current_user.id, form.lesson.data)
-        return redirect(url_for('quiz'))
+        persist_user_lesson_exercise_progress(form.lesson.data)
+        return redirect(url_for('quiz', lesson_id=form.lesson.data,
+                                exercise_id=choose_random_exercise_id(form.lesson.data)))
     return render_template("index.html", title="Home", form=form)
 
 @app.route("/quiz", methods=["GET", "POST"])
@@ -70,11 +75,13 @@ def index():
 def quiz():
     lesson_id = request.args.get("lesson_id")
     exercise_id = request.args.get("exercise_id")
+    exercise = Exercise.query.filter_by(lesson=lesson_id, id=exercise_id).first()
+    update_exercise_stats = UserLessonExerciseProgress.query.filter_by(lesson_id=lesson_id, exercise_id=exercise_id).first()
     form = MathQuizForm(exercise_id=exercise_id)
     if form.validate_on_submit():
         flash('Correct!')
+        update_exercise_stats.times_shown += 1
+        db.session.commit()
         exercise_id = choose_random_exercise_id(lesson_id)
-        return redirect(url_for('quiz', exercise_id=exercise_id, lesson_id=lesson_id))
-
-    exercise = Exercise.query.filter_by(id=exercise_id).first()
+        return redirect(url_for('quiz', exercise_id=exercise_id, lesson_id=lesson_id, question=exercise.question))
     return render_template("quiz.html", title="Quiz", form=form, question=exercise.question)
