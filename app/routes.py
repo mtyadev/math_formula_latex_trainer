@@ -8,11 +8,8 @@ from werkzeug.urls import url_parse
 from flask import request
 
 def choose_random_exercise_id(lesson_id):
-    exercise_ids_in_lesson = [
-        x.exercise_id for x in UserLessonExerciseProgress.query.filter(
-        (lesson_id==lesson_id) & (user_id==current_user.id) & times_shown<=3
-            ).all())
-    ]
+    exercise_ids_in_lesson = [x.exercise_id for x in UserLessonExerciseProgress.query.filter_by(
+        lesson_id=lesson_id, user_id=current_user.id) if x.times_shown <= 1]
     return random.choice(exercise_ids_in_lesson)
 
 def persist_user_lesson_exercise_progress(lesson_id):
@@ -76,12 +73,17 @@ def quiz():
     lesson_id = request.args.get("lesson_id")
     exercise_id = request.args.get("exercise_id")
     exercise = Exercise.query.filter_by(lesson=lesson_id, id=exercise_id).first()
-    update_exercise_stats = UserLessonExerciseProgress.query.filter_by(lesson_id=lesson_id, exercise_id=exercise_id).first()
+    update_exercise_stats = UserLessonExerciseProgress.query.filter_by(
+        lesson_id=lesson_id, exercise_id=exercise_id, user_id=current_user.id).first()
+    monitor_stats = UserLessonExerciseProgress.query.filter_by(
+        lesson_id=lesson_id, user_id=current_user.id).all()
     form = MathQuizForm(exercise_id=exercise_id)
     if form.validate_on_submit():
         flash('Correct!')
         update_exercise_stats.times_shown += 1
         db.session.commit()
         exercise_id = choose_random_exercise_id(lesson_id)
-        return redirect(url_for('quiz', exercise_id=exercise_id, lesson_id=lesson_id, question=exercise.question))
-    return render_template("quiz.html", title="Quiz", form=form, question=exercise.question)
+        return redirect(url_for('quiz', exercise_id=exercise_id, lesson_id=lesson_id, monitor_stats=monitor_stats,
+                                question=exercise.question))
+    return render_template("quiz.html", title="Quiz", form=form, monitor_stats=monitor_stats,
+                           question=exercise.question)
