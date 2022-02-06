@@ -39,7 +39,8 @@ class MathQuizForm(FlaskForm):
         print(correct_solution.answer)
         print(self.entered_solution.data)
         if self.entered_solution.data != correct_solution.answer:
-            self.entered_solution.errors.append('Wrong answer!')
+            self.entered_solution.errors.append('Wrong answer! Correct -> {}'.format(
+                correct_solution.answer))
             result = False
         return result
 
