@@ -1,9 +1,9 @@
 import random
 from flask import render_template, flash, redirect, url_for
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, MathQuizForm
+from app.forms import LoginForm, RegistrationForm, MathQuizForm, LessonSelection
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User, Lesson, Exercise
+from app.models import User, Lesson, Exercise, UserLessonExerciseProgress
 from werkzeug.urls import url_parse
 from flask import request
 
@@ -11,6 +11,11 @@ def choose_random_exercise_id(lesson_id):
     exercise_ids_in_lesson = [exercise.id for exercise in Exercise.query.filter_by(lesson=lesson_id).all()]
     exercise_id = random.choice(exercise_ids_in_lesson)
     return exercise_id
+
+def persist_user_lesson_exercise_progress(user_id, lesson_id):
+    for exercise in Exercise.query.filter_by(lesson=lesson_id).all():
+        db.session.add(UserLessonExerciseProgress(user_id, lesson_id, exercise.id, 0, 0))
+    db.session.commit()
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -48,14 +53,17 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
-@app.route("/")
-@app.route("/index")
+@app.route("/", methods=["GET", "POST"])
+@app.route("/index", methods=["GET", "POST"])
 @login_required
 def index():
-    lesson_with_exercise_ids = []
-    for lesson in Lesson.query.all():
-        lesson_with_exercise_ids.append((lesson.title, lesson.id, choose_random_exercise_id(lesson.id)))
-    return render_template("index.html", title="Home", lesson_with_exercise_ids=lesson_with_exercise_ids)
+    form = LessonSelection()
+    form.lesson.choices = [(lesson.id, lesson.title) for lesson in Lesson.query.all()]
+    if form.validate_on_submit():
+        import pdb; pdb.set_trace()
+        persist_user_lesson_exercise_progress(current_user.id, form.lesson.data)
+        return redirect(url_for('quiz'))
+    return render_template("index.html", title="Home", form=form)
 
 @app.route("/quiz", methods=["GET", "POST"])
 @login_required

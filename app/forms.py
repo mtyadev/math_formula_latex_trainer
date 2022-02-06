@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField
-from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField, SelectField
+from wtforms.validators import DataRequired, ValidationError, InputRequired, Email, EqualTo
 from app.models import User, Exercise
 
 class LoginForm(FlaskForm):
@@ -10,10 +10,10 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Sign In")
 
 class RegistrationForm(FlaskForm):
-    username = StringField("Username", validators = [DataRequired()])
-    email = StringField("Email", validators = [DataRequired(), Email()])
-    password = PasswordField("Password", validators = [DataRequired()])
-    password2 = PasswordField("Please repeat the password", validators = [DataRequired(), EqualTo("password")])
+    username = StringField("Username", validators=[DataRequired()])
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    password = PasswordField("Password", validators=[DataRequired()])
+    password2 = PasswordField("Please repeat the password", validators=[DataRequired(), EqualTo("password")])
     submit = SubmitField("Register")
 
     def validate_username(self, username):
@@ -28,7 +28,7 @@ class RegistrationForm(FlaskForm):
 
 class MathQuizForm(FlaskForm):
     exercise_id = HiddenField("exercise_id")
-    entered_solution = StringField("solution", validators = [DataRequired()])
+    entered_solution = StringField("solution", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
     def validate(self):
@@ -43,5 +43,10 @@ class MathQuizForm(FlaskForm):
                 correct_solution.answer))
             result = False
         return result
+
+class LessonSelection(FlaskForm):
+    lesson = SelectField("Lesson", coerce=int, validators=[InputRequired()])
+    submit = SubmitField("Submit")
+
 
 

@@ -61,4 +61,5 @@ class UserLessonExerciseProgress(db.Model):
         self.times_false = times_false
 
     def __repr__(self):
-        return f"User {self.user_id} Lesson {self.lesson_id} Exercise {self.exercise_id} Progress"
+        return "User {} Lesson {} Exercise {} Times Shown {} Times False {}".format(
+            self.user_id, self.lesson_id, self.exercise_id, self.times_shown, self.times_false)
