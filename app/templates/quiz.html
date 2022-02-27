@@ -45,6 +45,12 @@
                 <li>{{ stat.exercise_id }} -> {{ stat.times_shown }}</li>
             {% endfor %}
             </ol>
+        <div class="col-4">
+            $${{ question }}$$
+            {{ wtf.quick_form(form) }}
+        </div>
+        <div class="col-4">
+            <span id="displayed_solution"></span>
         </div>
     </div>
 

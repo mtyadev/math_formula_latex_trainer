@@ -8,4 +8,14 @@
 <div class="col-md-4">
     {{ wtf.quick_form(form) }}
 </div>
+    <h1>Hi, {{ current_user.username }}!</h1>
+    <div class="row">
+        <div class="col-md-4">
+            <ul class="list-group">
+                {% for element in lesson_with_exercise_ids %}
+                <li class="list-group-item"><a href="{{ url_for('quiz', lesson_id=element[1], exercise_id=element[2]) }}">{{element[0]}}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 {% endblock %}
