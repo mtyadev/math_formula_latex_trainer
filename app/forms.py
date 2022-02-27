@@ -48,5 +48,10 @@ class LessonSelection(FlaskForm):
     lesson = SelectField("Lesson", coerce=int, validators=[InputRequired()])
     submit = SubmitField("Submit")
 
+class Editor(FlaskForm):
+    question = StringField("question", validators=[DataRequired()])
+    answer = StringField("answer", validators=[DataRequired()])
+    submit = SubmitField("Update Exercise")
+
 
 
