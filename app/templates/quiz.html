@@ -20,6 +20,11 @@
         <button type="button" id="frac" class="col-1">\frac{}{}</button>
         <button type="button" id="sqrt" class="col-1">\sqrt{}</button>
     </div>
+    <br />
+    <br />
+    <div class="row">
+        <a href="{{ url_for('editor', exercise_id=exercise_id, lesson_id=lesson_id) }}">Editor</a>
+    </div>
 
     <script>
     document.getElementById("sqrt").addEventListener("click", function() {
@@ -36,22 +41,5 @@
     });
 
     </script>
-
-    <div class="row">
-        <div class="col-6">
-            <br />
-            <ol>
-            {% for stat in monitor_stats %}
-                <li>{{ stat.exercise_id }} -> {{ stat.times_shown }}</li>
-            {% endfor %}
-            </ol>
-        <div class="col-4">
-            $${{ question }}$$
-            {{ wtf.quick_form(form) }}
-        </div>
-        <div class="col-4">
-            <span id="displayed_solution"></span>
-        </div>
-    </div>
 
 {% endblock %}

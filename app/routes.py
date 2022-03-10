@@ -1,7 +1,7 @@
 import random
 from flask import render_template, flash, redirect, url_for
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, MathQuizForm, LessonSelection
+from app.forms import LoginForm, RegistrationForm, MathQuizForm, LessonSelection, Editor
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User, Lesson, Exercise, UserLessonExerciseProgress
 from werkzeug.urls import url_parse
@@ -86,4 +86,18 @@ def quiz():
         return redirect(url_for('quiz', exercise_id=exercise_id, lesson_id=lesson_id, monitor_stats=monitor_stats,
                                 question=exercise.question))
     return render_template("quiz.html", title="Quiz", form=form, monitor_stats=monitor_stats,
-                           question=exercise.question)
+                           question=exercise.question, lesson_id=lesson_id, exercise_id=exercise_id)
+
+@app.route("/editor", methods=["GET", "POST"])
+@login_required
+def editor():
+    lesson_id = request.args.get("lesson_id")
+    exercise_id = request.args.get("exercise_id")
+    exercise = Exercise.query.filter_by(lesson=lesson_id, id=exercise_id).first()
+    form = Editor(question=exercise.question, answer=exercise.answer)
+    if form.validate_on_submit():
+        exercise.question = form.question.data
+        exercise.answer = form.answer.data
+        db.session.commit()
+        flash('Updated Exercise!')
+    return render_template("editor.html", title="editor", form=form, exercise_id=exercise_id)
