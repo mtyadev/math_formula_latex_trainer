@@ -5,12 +5,14 @@
 
     <h1>Quiz for {{ current_user.username }}!</h1>
     <div class="row">
-        <div class="col-6">
+        <div class="col">
             $${{ question }}$$
-            {{ wtf.quick_form(form) }}
         </div>
-        <div class="col-6">
+        <div class="col">
             <div id="displayed_solution"></div>
+        </div>
+        <div class="col">
+            {{ wtf.quick_form(form) }}
         </div>
     </div>
     <br />
@@ -24,6 +26,10 @@
     <br />
     <div class="row">
         <a href="{{ url_for('editor', exercise_id=exercise_id, lesson_id=lesson_id) }}">Editor</a>
+    </div>
+
+    <div class="row">
+        <img src="{{url_for('static', filename='sine_definition_question_image.png')}}" align="middle" />
     </div>
 
     <script>
