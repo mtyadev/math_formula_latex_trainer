@@ -78,15 +78,17 @@ def quiz():
     monitor_stats = UserLessonExerciseProgress.query.filter_by(
         lesson_id=lesson_id, user_id=current_user.id).all()
     form = MathQuizForm(exercise_id=exercise_id)
+    import pdb; pdb.set_trace()
     if form.validate_on_submit():
         flash('Correct!')
         update_exercise_stats.times_shown += 1
         db.session.commit()
         exercise_id = choose_random_exercise_id(lesson_id)
         return redirect(url_for('quiz', exercise_id=exercise_id, lesson_id=lesson_id, monitor_stats=monitor_stats,
-                                question=exercise.question))
+                                question=exercise.question, quiz_image=exercise.title))
     return render_template("quiz.html", title="Quiz", form=form, monitor_stats=monitor_stats,
-                           question=exercise.question, lesson_id=lesson_id, exercise_id=exercise_id)
+                           question=exercise.question, lesson_id=lesson_id, exercise_id=exercise_id,
+                           quiz_image=exercise.title)
 
 @app.route("/editor", methods=["GET", "POST"])
 @login_required
