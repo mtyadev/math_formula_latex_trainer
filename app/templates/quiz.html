@@ -5,10 +5,12 @@
 
     <h1>Quiz for {{ current_user.username }}!</h1>
     <div class="row">
+        <div class="col">
+        <img src="{{url_for('static', filename=quiz_solution_image_previous)}}" align="right" style="width: 55vw; min-width: 330px;" />
+        </div>
+        <div class="col">
         <img src="{{url_for('static', filename=quiz_question_image_current)}}" align="left" style="width: 55vw; min-width: 330px;" />
-    </div>
-    <div class="row">
-        <img src="{{url_for('static', filename=quiz_solution_image_last)}}" align="right" style="width: 55vw; min-width: 330px;" />
+        </div>
     </div>
     <div class="row">
         <div class="col">

@@ -72,7 +72,9 @@ def index():
 def quiz():
     lesson_id = request.args.get("lesson_id")
     exercise_id = request.args.get("exercise_id")
-    quiz_solution_image_last = request.args.get("quiz_solution_image_last")
+    quiz_solution_image_previous = request.args.get("quiz_solution_image_previous")
+    if not quiz_solution_image_previous:
+        quiz_solution_image_previous = "empty.png"
     exercise_current = Exercise.query.filter_by(lesson=lesson_id, id=exercise_id).first()
     quiz_question_image_current = f"{exercise_current.title}_question_image.png"
     quiz_solution_image_current = f"{exercise_current.title}_solution_image.png"
@@ -92,11 +94,15 @@ def quiz():
                                 monitor_stats=monitor_stats,
                                 question=exercise_current.question,
                                 quiz_question_image_current=quiz_question_image_current,
-                                quiz_solution_image_current=quiz_solution_image_current,
-                                quiz_solution_image_last=quiz_solution_image_last))
-    return render_template("quiz.html", title="Quiz", form=form, monitor_stats=monitor_stats,
-                           question=exercise_current.question, lesson_id=lesson_id, exercise_id=exercise_id,
-                           quiz_question_image_current=quiz_question_image_current)
+                                quiz_solution_image_previous=quiz_solution_image_current))
+    return render_template('quiz.html',
+                                   form=form,
+                                   monitor_stats=monitor_stats,
+                                   question=exercise_current.question,
+                                   lesson_id=lesson_id,
+                                   exercise_id=exercise_id,
+                                   quiz_question_image_current=quiz_question_image_current,
+                                   quiz_solution_image_previous=quiz_solution_image_previous)
 
 @app.route("/editor", methods=["GET", "POST"])
 @login_required
