@@ -72,23 +72,31 @@ def index():
 def quiz():
     lesson_id = request.args.get("lesson_id")
     exercise_id = request.args.get("exercise_id")
-    exercise = Exercise.query.filter_by(lesson=lesson_id, id=exercise_id).first()
+    quiz_solution_image_last = request.args.get("quiz_solution_image_last")
+    exercise_current = Exercise.query.filter_by(lesson=lesson_id, id=exercise_id).first()
+    quiz_question_image_current = f"{exercise_current.title}_question_image.png"
+    quiz_solution_image_current = f"{exercise_current.title}_solution_image.png"
     update_exercise_stats = UserLessonExerciseProgress.query.filter_by(
         lesson_id=lesson_id, exercise_id=exercise_id, user_id=current_user.id).first()
     monitor_stats = UserLessonExerciseProgress.query.filter_by(
         lesson_id=lesson_id, user_id=current_user.id).all()
     form = MathQuizForm(exercise_id=exercise_id)
-    import pdb; pdb.set_trace()
     if form.validate_on_submit():
         flash('Correct!')
         update_exercise_stats.times_shown += 1
         db.session.commit()
-        exercise_id = choose_random_exercise_id(lesson_id)
-        return redirect(url_for('quiz', exercise_id=exercise_id, lesson_id=lesson_id, monitor_stats=monitor_stats,
-                                question=exercise.question, quiz_image=exercise.title))
+        next_exercise_id = choose_random_exercise_id(lesson_id)
+        return redirect(url_for('quiz',
+                                exercise_id=next_exercise_id,
+                                lesson_id=lesson_id,
+                                monitor_stats=monitor_stats,
+                                question=exercise_current.question,
+                                quiz_question_image_current=quiz_question_image_current,
+                                quiz_solution_image_current=quiz_solution_image_current,
+                                quiz_solution_image_last=quiz_solution_image_last))
     return render_template("quiz.html", title="Quiz", form=form, monitor_stats=monitor_stats,
-                           question=exercise.question, lesson_id=lesson_id, exercise_id=exercise_id,
-                           quiz_image=exercise.title)
+                           question=exercise_current.question, lesson_id=lesson_id, exercise_id=exercise_id,
+                           quiz_question_image_current=quiz_question_image_current)
 
 @app.route("/editor", methods=["GET", "POST"])
 @login_required
