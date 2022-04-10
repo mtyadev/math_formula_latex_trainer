@@ -34,11 +34,13 @@ class Lesson(db.Model):
 
 class Exercise(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String, nullable=True)
     question = db.Column(db.String, nullable=False)
     answer = db.Column(db.String, nullable=False)
     lesson = db.Column(db.Integer, db.ForeignKey("lesson.id"))
 
-    def __init__(self, question, answer, lesson):
+    def __init__(self, title, question, answer, lesson):
+        self.title = title
         self.question = question
         self.answer = answer
         self.lesson = lesson

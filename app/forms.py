@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField, SelectField
 from wtforms.validators import DataRequired, ValidationError, InputRequired, Email, EqualTo
 from app.models import User, Exercise
+import difflib as dl
 
 class LoginForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired()])
@@ -28,6 +29,7 @@ class RegistrationForm(FlaskForm):
 
 class MathQuizForm(FlaskForm):
     exercise_id = HiddenField("exercise_id")
+    quiz_solution_image_previous = HiddenField("quiz_solution_image_previous")
     entered_solution = StringField("solution", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
@@ -40,7 +42,8 @@ class MathQuizForm(FlaskForm):
         print(self.entered_solution.data)
         if self.entered_solution.data != correct_solution.answer:
             self.entered_solution.errors.append('Wrong answer! Correct -> {}'.format(
-                correct_solution.answer))
+                "".join([x[2:] if x[0] not in ["+", "-"] else f"[{x}]" for x in dl.Differ().compare(
+                    self.entered_solution.data, correct_solution.answer)])))
             result = False
         return result
 

@@ -5,12 +5,27 @@
 
     <h1>Quiz for {{ current_user.username }}!</h1>
     <div class="row">
-        <div class="col-6">
-            $${{ question }}$$
-            {{ wtf.quick_form(form) }}
+        <div class="col">
+        <img src="{{url_for('static', filename=quiz_solution_image_previous)}}"/>
         </div>
-        <div class="col-6">
+    </div>
+    <br />
+    <hr>
+    <br />
+    <div class="row">
+        <div class="col">
+        <img src="{{url_for('static', filename=quiz_question_image_current)}}"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            $${{ question }}$$
+        </div>
+        <div class="col">
             <div id="displayed_solution"></div>
+        </div>
+        <div class="col">
+            {{ wtf.quick_form(form) }}
         </div>
     </div>
     <br />
@@ -25,7 +40,6 @@
     <div class="row">
         <a href="{{ url_for('editor', exercise_id=exercise_id, lesson_id=lesson_id) }}">Editor</a>
     </div>
-
     <script>
     document.getElementById("sqrt").addEventListener("click", function() {
       $("input#entered_solution.form-control").val($("input#entered_solution.form-control").val() + "\\sqrt{}");
