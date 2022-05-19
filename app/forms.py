@@ -40,7 +40,7 @@ class MathQuizForm(FlaskForm):
         correct_solution = Exercise.query.filter_by(id=self.exercise_id.data).first()
         print(correct_solution.answer)
         print(self.entered_solution.data)
-        if self.entered_solution.data != correct_solution.answer:
+        if self.entered_solution.data != correct_solution.answer.split("\\\\"):
             self.entered_solution.errors.append('Wrong answer! Correct -> {}'.format(
                 "".join([x[2:] if x[0] not in ["+", "-"] else f"[{x}]" for x in dl.Differ().compare(
                     self.entered_solution.data, correct_solution.answer)])))

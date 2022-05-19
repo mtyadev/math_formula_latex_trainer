@@ -9,7 +9,7 @@ from flask import request
 
 def choose_random_exercise_id(lesson_id):
     exercise_ids_in_lesson = [x.exercise_id for x in UserLessonExerciseProgress.query.filter_by(
-        lesson_id=lesson_id, user_id=current_user.id) if x.times_shown <= 1]
+        lesson_id=lesson_id, user_id=current_user.id) if x.times_shown < 1]
     return random.choice(exercise_ids_in_lesson)
 
 def persist_user_lesson_exercise_progress(lesson_id):
@@ -18,6 +18,11 @@ def persist_user_lesson_exercise_progress(lesson_id):
         for exercise in Exercise.query.filter_by(lesson=lesson_id).all():
             db.session.add(UserLessonExerciseProgress(current_user.id, lesson_id, exercise.id, 0, 0))
         db.session.commit()
+
+def get_lesson_progress(lesson_id):
+    return [(x.exercise_id, x.times_shown) for x in UserLessonExerciseProgress.query.filter_by(
+        lesson_id=lesson_id, user_id=current_user.id).all()]
+
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -94,15 +99,17 @@ def quiz():
                                 monitor_stats=monitor_stats,
                                 question=exercise_current.question,
                                 quiz_question_image_current=quiz_question_image_current,
-                                quiz_solution_image_previous=quiz_solution_image_current))
+                                quiz_solution_image_previous=quiz_solution_image_current,
+                                lesson_progress=get_lesson_progress(lesson_id)))
     return render_template('quiz.html',
-                                   form=form,
-                                   monitor_stats=monitor_stats,
-                                   question=exercise_current.question,
-                                   lesson_id=lesson_id,
-                                   exercise_id=exercise_id,
-                                   quiz_question_image_current=quiz_question_image_current,
-                                   quiz_solution_image_previous=quiz_solution_image_previous)
+                           form=form,
+                           monitor_stats=monitor_stats,
+                           question=exercise_current.question,
+                           lesson_id=lesson_id,
+                           exercise_id=exercise_id,
+                           quiz_question_image_current=quiz_question_image_current,
+                           quiz_solution_image_previous=quiz_solution_image_previous,
+                           lesson_progress=get_lesson_progress(lesson_id))
 
 @app.route("/editor", methods=["GET", "POST"])
 @login_required
