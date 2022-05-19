@@ -98,6 +98,8 @@ def quiz():
                                 lesson_id=lesson_id,
                                 monitor_stats=monitor_stats,
                                 question=exercise_current.question,
+                                correct_answer=exercise_current.answer,
+                                entered_answer=form["entered_solution"].data,
                                 quiz_question_image_current=quiz_question_image_current,
                                 quiz_solution_image_previous=quiz_solution_image_current,
                                 lesson_progress=get_lesson_progress(lesson_id)))

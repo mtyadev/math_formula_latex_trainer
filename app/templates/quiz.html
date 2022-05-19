@@ -4,14 +4,30 @@
 {% block app_content %}
 
     <h1>Quiz for {{ current_user.username }}!</h1>
+    <h2>Quiz Solution Image - Last Question</h2>
     <div class="row">
         <div class="col">
         <img src="{{url_for('static', filename=quiz_solution_image_previous)}}"/>
         </div>
     </div>
     <br />
-    <hr>
+    <div class="row">
+        <div class="col">
+            <h2>Full Suggested Answer</h2>
+            $${{ correct_answer }}$$
+        </div>
+    </div>
     <br />
+    <br />
+    <div class="row">
+        <div class="col">
+            <h2>Entered Answer</h2>
+            $${{ entered_answer }}$$
+        </div>
+    </div>
+    <br />
+    <hr>
+    <h2>Quiz Current Question Image</h2>
     <div class="row">
         <div class="col">
         <img src="{{url_for('static', filename=quiz_question_image_current)}}"/>
