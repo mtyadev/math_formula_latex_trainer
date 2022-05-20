@@ -77,12 +77,15 @@ def index():
 def quiz():
     lesson_id = request.args.get("lesson_id")
     exercise_id = request.args.get("exercise_id")
+    correct_answer_previous = request.args.get("correct_answer_previous")
+    entered_answer_previous = request.args.get("entered_answer_previous")
     quiz_solution_image_previous = request.args.get("quiz_solution_image_previous")
     if not quiz_solution_image_previous:
         quiz_solution_image_previous = "empty.png"
     exercise_current = Exercise.query.filter_by(lesson=lesson_id, id=exercise_id).first()
     quiz_question_image_current = f"{exercise_current.title}_question_image.png"
     quiz_solution_image_current = f"{exercise_current.title}_solution_image.png"
+    correct_answer_current = exercise_current.answer
     update_exercise_stats = UserLessonExerciseProgress.query.filter_by(
         lesson_id=lesson_id, exercise_id=exercise_id, user_id=current_user.id).first()
     monitor_stats = UserLessonExerciseProgress.query.filter_by(
@@ -98,10 +101,10 @@ def quiz():
                                 lesson_id=lesson_id,
                                 monitor_stats=monitor_stats,
                                 question=exercise_current.question,
-                                correct_answer=exercise_current.answer,
-                                entered_answer=form["entered_solution"].data,
                                 quiz_question_image_current=quiz_question_image_current,
                                 quiz_solution_image_previous=quiz_solution_image_current,
+                                entered_answer_previous=form["entered_solution"].data,
+                                correct_answer_previous=correct_answer_current,
                                 lesson_progress=get_lesson_progress(lesson_id)))
     return render_template('quiz.html',
                            form=form,
@@ -110,7 +113,9 @@ def quiz():
                            lesson_id=lesson_id,
                            exercise_id=exercise_id,
                            quiz_question_image_current=quiz_question_image_current,
+                           entered_answer_previous=entered_answer_previous,
                            quiz_solution_image_previous=quiz_solution_image_previous,
+                           correct_answer_previous=correct_answer_previous,
                            lesson_progress=get_lesson_progress(lesson_id))
 
 @app.route("/editor", methods=["GET", "POST"])

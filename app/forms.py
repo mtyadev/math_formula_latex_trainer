@@ -30,6 +30,8 @@ class RegistrationForm(FlaskForm):
 class MathQuizForm(FlaskForm):
     exercise_id = HiddenField("exercise_id")
     quiz_solution_image_previous = HiddenField("quiz_solution_image_previous")
+    correct_answer_previous = HiddenField("correct_answer_previous")
+    entered_answer_previous = HiddenField("entered_answer_previous")
     entered_solution = StringField("solution", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
