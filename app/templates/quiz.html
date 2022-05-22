@@ -2,53 +2,71 @@
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block app_content %}
-
-    <h1>Quiz for {{ current_user.username }}!</h1>
-    <h2>Quiz Solution Image - Last Question</h2>
-    <div class="row">
+    <div class="row row-previous">
         <div class="col">
-        <img src="{{url_for('static', filename=quiz_solution_image_previous)}}"/>
+            <h2>Quiz Solution Image - Last Question</h2>
+            <img src="{{url_for('static', filename=quiz_solution_image_previous)}}" class="img-responsive"/>
         </div>
     </div>
     <br />
-    <div class="row">
-        <div class="col">
-            <h2>Previous Full Suggested Answer</h2>
-            $${{ correct_answer_previous }}$$
-
-        <div class="col">
-            <h2>Previous Entered Solution</h2>
+    <div class="row row-previous">
+        <div class="col-sm-3">
+        </div>
+        <div class="col-sm-3">
+            <p>Entered Solution</p>
             $${{ entered_answer_previous }}$$
         </div>
+        <div class="col-sm-3">
+            <p>Full Suggested Answer</p>
+            $${{ correct_answer_previous }}$$
+        </div>
+        <div class="col-sm-3">
+        </div>
+
     </div>
     <br />
     <hr>
-    <h2>Quiz Current Question Image</h2>
     <div class="row">
-        <div class="col">
-        <img src="{{url_for('static', filename=quiz_question_image_current)}}"/>
+        <div class="col-sm-6">
+            <div class="row row-current-response">
+                <div class="col-sm">
+                    $${{ question }}$$
+                </div>
+            </div>
+
+            <div class="row row-current-response">
+                <div class="col-sm">
+                    <div id="displayed_solution"></div>
+                </div>
+            </div>
+
+            <div class="row row-current-response">
+                <div class="col-sm">
+                    {{ wtf.quick_form(form) }}
+                </div>
+                <br />
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" id="text" class="btn btn-primary">\text{}</button>
+                    <button type="button" id="exp" class="btn btn-primary">^{}</button>
+                    <button type="button" id="frac" class="btn btn-primary">\frac{}{}</button>
+                    <button type="button" id="sqrt" class="btn btn-primary">\sqrt{}</button>
+                </div>
+            </div>
+
         </div>
+
+        <div class="col-sm-6">
+            <div class="row row-current-question">
+                <div class="col-sm">
+                    <img src="{{url_for('static', filename=quiz_question_image_current)}}" class="img-responsive"/>
+                </div>
+            </div>
+        </div>
+
     </div>
-    <div class="row">
-        <div class="col">
-            $${{ question }}$$
-        </div>
-        <div class="col">
-            <div id="displayed_solution"></div>
-        </div>
-        <div class="col">
-            {{ wtf.quick_form(form) }}
-        </div>
-    </div>
+
     <br />
-    <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" id="text" class="col-1">\text{}</button>
-        <button type="button" id="exp" class="col-1">^{}</button>
-        <button type="button" id="frac" class="col-1">\frac{}{}</button>
-        <button type="button" id="sqrt" class="col-1">\sqrt{}</button>
-    </div>
-    <br />
-    <br />
+
     <div class="row">
         <a href="{{ url_for('editor', exercise_id=exercise_id, lesson_id=lesson_id) }}">Editor</a>
     </div>
@@ -65,6 +83,8 @@
             </ol>
         </div>
     </div>
+
+
 
 
 
