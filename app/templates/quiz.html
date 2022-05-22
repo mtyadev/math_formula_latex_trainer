@@ -4,14 +4,26 @@
 {% block app_content %}
 
     <h1>Quiz for {{ current_user.username }}!</h1>
+    <h2>Quiz Solution Image - Last Question</h2>
     <div class="row">
         <div class="col">
         <img src="{{url_for('static', filename=quiz_solution_image_previous)}}"/>
         </div>
     </div>
     <br />
-    <hr>
+    <div class="row">
+        <div class="col">
+            <h2>Previous Full Suggested Answer</h2>
+            $${{ correct_answer_previous }}$$
+
+        <div class="col">
+            <h2>Previous Entered Solution</h2>
+            $${{ entered_answer_previous }}$$
+        </div>
+    </div>
     <br />
+    <hr>
+    <h2>Quiz Current Question Image</h2>
     <div class="row">
         <div class="col">
         <img src="{{url_for('static', filename=quiz_question_image_current)}}"/>
@@ -40,6 +52,22 @@
     <div class="row">
         <a href="{{ url_for('editor', exercise_id=exercise_id, lesson_id=lesson_id) }}">Editor</a>
     </div>
+
+    <hr>
+    <br />
+    <div class="row">
+        <div class="col">
+            <h2>Lesson Progress</h2>
+            <ol>
+            {% for exercise in lesson_progress %}
+                <li>{{exercise[1]}}</li>
+            {% endfor %}
+            </ol>
+        </div>
+    </div>
+
+
+
     <script>
     document.getElementById("sqrt").addEventListener("click", function() {
       $("input#entered_solution.form-control").val($("input#entered_solution.form-control").val() + "\\sqrt{}");
