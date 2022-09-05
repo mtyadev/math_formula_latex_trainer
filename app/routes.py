@@ -16,7 +16,7 @@ def persist_user_lesson_exercise_progress(lesson_id):
     # Only persist, if hasn't been persisted before.
     if not UserLessonExerciseProgress.query.filter_by(lesson_id=lesson_id, user_id=current_user.id).all():
         for exercise in Exercise.query.filter_by(lesson=lesson_id).all():
-            db.session.add(UserLessonExerciseProgress(current_user.id, lesson_id, exercise.id, 0, 0))
+            db.session.add(UserLessonExerciseProgress(current_user.id, lesson_id, exercise.id, 0, 0, False))
         db.session.commit()
 
 def get_lesson_progress(lesson_id):
@@ -94,6 +94,7 @@ def quiz():
     if form.validate_on_submit():
         flash('Correct!')
         update_exercise_stats.times_shown += 1
+        update_exercise_stats.repetition_required = form.repetition_required.data
         db.session.commit()
         next_exercise_id = choose_random_exercise_id(lesson_id)
         return redirect(url_for('quiz',

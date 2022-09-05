@@ -54,14 +54,17 @@ class UserLessonExerciseProgress(db.Model):
     exercise_id = db.Column(db.Integer, db.ForeignKey("exercise.id"), primary_key=True)
     times_shown = db.Column(db.Integer, nullable=False)
     times_false = db.Column(db.Integer, nullable=False)
+    repetition_required = db.Column(db.Boolean)
 
-    def __init__(self, user_id, lesson_id, exercise_id, times_shown, times_false):
+    def __init__(self, user_id, lesson_id, exercise_id, times_shown, times_false, repetition_required):
         self.user_id = user_id
         self.lesson_id = lesson_id
         self.exercise_id = exercise_id
         self.times_shown = times_shown
         self.times_false = times_false
+        self.repetition_required = repetition_required
 
     def __repr__(self):
-        return "User {} Lesson {} Exercise {} Times Shown {} Times False {}".format(
-            self.user_id, self.lesson_id, self.exercise_id, self.times_shown, self.times_false)
+        return "User {} Lesson {} Exercise {} Times Shown {} Times False {} Repetition Required {}".format(
+            self.user_id, self.lesson_id, self.exercise_id, self.times_shown, self.times_false,
+            self.repetition_required)

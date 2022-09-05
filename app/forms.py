@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask import flash
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField, SelectField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField, SelectField, RadioField
 from wtforms.validators import DataRequired, ValidationError, InputRequired, Email, EqualTo
 from app.models import User, Exercise
 import difflib as dl
@@ -34,6 +34,7 @@ class MathQuizForm(FlaskForm):
     correct_answer_previous = HiddenField("correct_answer_previous")
     entered_answer_previous = HiddenField("entered_answer_previous")
     entered_solution = StringField("solution", validators=[DataRequired()])
+    repetition_required = BooleanField("repetition_required")
     submit = SubmitField("Submit")
 
     def validate(self):
