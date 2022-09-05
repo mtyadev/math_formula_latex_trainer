@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask import flash
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField, SelectField
 from wtforms.validators import DataRequired, ValidationError, InputRequired, Email, EqualTo
 from app.models import User, Exercise
@@ -43,9 +44,8 @@ class MathQuizForm(FlaskForm):
         solution_short = correct_solution.answer.split("\\\\")[-1].strip()
         solution_entered_short = self.entered_solution.data.split("\\\\")[-1].strip()
         if solution_entered_short != solution_short:
-            self.entered_solution.errors.append('Wrong answer! Correct -> {}'.format(
-                "".join([x[2:] if x[0] not in ["+", "-"] else f"[{x}]" for x in dl.Differ().compare(
-                    self.entered_solution.data, correct_solution.answer)])))
+            flash(correct_solution.answer)
+            self.entered_solution.errors.append("Nope ... !")
             result = False
         return result
 
