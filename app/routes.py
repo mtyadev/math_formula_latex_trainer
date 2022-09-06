@@ -9,7 +9,7 @@ from flask import request
 
 def lesson_completed(lesson_id):
     lesson_progress = get_lesson_progress(lesson_id)
-    if not sum([l[1] for l in lesson_progress]) % (len(lesson_progress)+1) == 0:
+    if not sum([l[1] for l in lesson_progress]) % len(lesson_progress) == 0:
         return False
     return True
 
