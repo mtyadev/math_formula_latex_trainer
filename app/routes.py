@@ -7,9 +7,15 @@ from app.models import User, Lesson, Exercise, UserLessonExerciseProgress
 from werkzeug.urls import url_parse
 from flask import request
 
+def lesson_completed(lesson_id):
+    lesson_progress = get_lesson_progress(lesson_id)
+    if not sum([l[1] for l in lesson_progress]) % (len(lesson_progress)+1) == 0:
+        return False
+    return True
+
 def choose_random_exercise_id(lesson_id):
-    exercise_ids_in_lesson = [x.exercise_id for x in UserLessonExerciseProgress.query.filter_by(
-        lesson_id=lesson_id, user_id=current_user.id) if x.times_shown < 1]
+    exercises_in_lesson = UserLessonExerciseProgress.query.filter_by(lesson_id=lesson_id, user_id=current_user.id)
+    exercise_ids_in_lesson = [x.exercise_id for x in exercises_in_lesson if x.times_shown < (min([e.times_shown for e in exercises_in_lesson])+1)]
     return random.choice(exercise_ids_in_lesson)
 
 def persist_user_lesson_exercise_progress(lesson_id):
@@ -90,6 +96,7 @@ def quiz():
         lesson_id=lesson_id, exercise_id=exercise_id, user_id=current_user.id).first()
     monitor_stats = UserLessonExerciseProgress.query.filter_by(
         lesson_id=lesson_id, user_id=current_user.id).all()
+
     form = MathQuizForm(exercise_id=exercise_id)
     if form.validate_on_submit():
         flash('Correct!')
@@ -106,7 +113,8 @@ def quiz():
                                 quiz_solution_image_previous=quiz_solution_image_current,
                                 entered_answer_previous=form["entered_solution"].data,
                                 correct_answer_previous=correct_answer_current,
-                                lesson_progress=get_lesson_progress(lesson_id)))
+                                lesson_progress=get_lesson_progress(lesson_id),
+                                lesson_completed=lesson_completed(lesson_id)))
     return render_template('quiz.html',
                            form=form,
                            monitor_stats=monitor_stats,
@@ -117,7 +125,8 @@ def quiz():
                            entered_answer_previous=entered_answer_previous,
                            quiz_solution_image_previous=quiz_solution_image_previous,
                            correct_answer_previous=correct_answer_previous,
-                           lesson_progress=get_lesson_progress(lesson_id))
+                           lesson_progress=get_lesson_progress(lesson_id),
+                           lesson_completed=lesson_completed(lesson_id))
 
 @app.route("/editor", methods=["GET", "POST"])
 @login_required
